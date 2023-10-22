@@ -1,19 +1,26 @@
 import bpy
-
-import bpy
-
-
-def main(context):
-    for ob in context.scene.objects:
-        print(ob)
-
+import random
 
 class SetViewportDisplayToCollection(bpy.types.Operator):
     bl_idname = "object.viewport_display_to_collection"
-    bl_label = "Set Viewport Display parameters to Collection"
+    bl_label = "Display Color Collection"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    # Create properties.
+    color: bpy.props.FloatVectorProperty(
+        name = "Colour",
+        description = "Viewport display color set to all direct children objects of the currently selected objects collection.",
+        subtype = "COLOR",
+        size=4,
+        default=(0.5, 0.5, 0.5, 1)
+    )
 
     def execute(self, context):
-        main(context)
+        collection = context.object.users_collection
+
+        for obj in collection[0].objects:
+            obj.color = self.color
+
         return {'FINISHED'}
 
 
@@ -29,4 +36,4 @@ if __name__ == "__main__":
     register()
 
     # test call
-    bpy.ops.object.simple_operator()
+    # bpy.ops.object.simple_operator()
